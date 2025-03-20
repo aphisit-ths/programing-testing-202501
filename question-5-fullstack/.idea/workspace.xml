@@ -27,12 +27,12 @@
     &quot;assignee&quot;: &quot;aphisit-ths&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/aphisit-ths/programming-test-202501.git&quot;,
-    &quot;accountId&quot;: &quot;aa2ff8bf-4af7-4855-87ac-29cc44d1e3dc&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/aphisit-ths/programing-testing-202501.git",
+    "accountId": "aa2ff8bf-4af7-4855-87ac-29cc44d1e3dc"
   }
-}</component>
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -45,7 +45,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feat/backend",
+    "git-widget-placeholder": "master",
     "last_opened_file_path": "/Users/aphisit/Desktop/programming-test-202501/question-5-fullstack/backend/src/flows/users",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -87,6 +87,7 @@
       <updated>1742395459847</updated>
       <workItem from="1742395460852" duration="51000" />
       <workItem from="1742397069023" duration="5783000" />
+      <workItem from="1742430283138" duration="19000" />
     </task>
     <task id="LOCAL-00001" summary="[Q5](backend) - init backend project">
       <option name="closed" value="true" />
