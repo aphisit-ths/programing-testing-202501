@@ -11,3 +11,12 @@ export class BadRequestException extends Error {
         super(message);
     }
 }
+
+import { Elysia } from 'elysia';
+
+export const errorHandler = new Elysia()
+    .onError(({ code, error, set }) => {
+
+
+
+    });

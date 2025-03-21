@@ -7,9 +7,9 @@ export const users = sqliteTable('users', {
     age: integer('age').notNull(),
     email: text('email').notNull(),
     avatarUrl: text('avatar_url').notNull(),
-    created_at: integer('created_at', { mode: 'timestamp' }).notNull().defaultNow(),
-    updated_at: integer('updated_at', { mode: 'timestamp' }).notNull().defaultNow(),
-    deleted_at: integer('deleted_at', { mode: 'timestamp' }),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull().defaultNow(),
+    updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().defaultNow(),
+    deletedAt: integer('deleted_at', { mode: 'timestamp' }),
 }, (table) => ({
     emailIdx: uniqueIndex('email_idx').on(table.email),
 }));

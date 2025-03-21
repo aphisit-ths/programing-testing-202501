@@ -1,4 +1,4 @@
 ### Helthcheck
-GET http://localhost:7777/
+GET http://localhost:7777/api/user/1
 Accept: application/json
 
