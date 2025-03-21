@@ -1,0 +1,4 @@
+### Helthcheck
+GET http://localhost:7777/
+Accept: application/json
+

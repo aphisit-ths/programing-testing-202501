@@ -1,8 +1,13 @@
 import { Elysia } from "elysia";
+import 'dotenv/config';
+import {healthChecks} from "./db/schema";
+import {db} from "./db/db";
+
+const health = await db.select().from(healthChecks).limit(1);
 
 const app = new Elysia()
 app
-    .get("/", () => "Hello Elysia")
+    .get("/", () => health)
 
 app.listen(process.env.PORT || 7777)
 
