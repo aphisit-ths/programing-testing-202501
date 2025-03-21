@@ -1,21 +1,8 @@
-import {CreteUserDto, UpdateUserDto, User} from "../models/user.model";
 import {BadRequestException} from "../middleware/exceptions";
+import {CreteUserDto, IQueryParams, UpdateUserDto} from "../controllers/type";
+import {User} from "../models/user.model";
 
-interface IUser {
-    get(query: string, start: number, limit: number): Promise<User[]>;
-
-    getById(id: number): Promise<User>;
-
-    getByEmail(email: string): Promise<User>;
-
-    create(body: CreteUserDto): Promise<User>;
-
-    update(body: UpdateUserDto): Promise<User>;
-
-    delete(id: number): Promise<User>;
-}
-
-export class UserRepo implements IUser {
+export class UserRepo {
 
     constructor(private readonly db: any) {
     }
@@ -36,7 +23,7 @@ export class UserRepo implements IUser {
         }
     }
 
-    get(query: string, start: number, limit: number): Promise<User[]> {
+    get(query:IQueryParams): Promise<User[]> {
         return Promise.resolve([]);
     }
 
