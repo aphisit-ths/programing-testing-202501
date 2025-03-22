@@ -10,6 +10,7 @@
     "db:migrate": "bun run ./src/db/migrate.ts"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.2.0",
     "@faker-js/faker": "^9.6.0",
     "better-sqlite3": "^11.9.1",
     "dotenv": "^16.4.7",
