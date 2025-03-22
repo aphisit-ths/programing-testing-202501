@@ -4,7 +4,7 @@ export class User {
     age:number;
     email:string;
     avatarUrl:string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
 }

@@ -63,7 +63,7 @@ export class UserRepo {
     async delete(id: number): Promise<void> {
         await this.db
             .update(users)
-            .set({deletedAt: new Date()})
+            .set({deletedAt: new Date().toISOString()})
             .where(eq(users.id, id));
     }
 

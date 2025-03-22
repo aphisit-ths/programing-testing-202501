@@ -3,14 +3,14 @@ version: '3'
 services:
   backend:
     build: ./backend
-    container_name: user-api-backend
+    container_name: backend
     ports:
       - "7777:7777"
     volumes:
-      - ./backend/src:/app/src
-      - sqlite-data:/app/mydb.sqlite
-    environment:
-      - NODE_ENV=development
-    restart: unless-stopped
-volumes:
-  sqlite-data:
+      - ./data:/app/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

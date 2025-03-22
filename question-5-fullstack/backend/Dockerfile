@@ -6,7 +6,7 @@ COPY . .
 
 RUN bun install
 
-RUN touch mydb.sqlite
+RUN touch user.sqlite
 RUN bun run db:migrate
 RUN bun run db:seed
 
