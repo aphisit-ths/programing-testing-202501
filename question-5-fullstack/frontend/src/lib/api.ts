@@ -1,7 +1,24 @@
 // lib/api.ts
-import { User, UserQueryParams, PaginatedResponse } from '@/types';
+import {User, UserQueryParams, PaginatedResponse} from '@/types';
 
 const API_BASE_URL = '/api';
+
+async function handleResponse<T>(response: Response): Promise<T> {
+    if (!response.ok) {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            // ถ้า API ส่ง error response เป็น JSON
+            const errorData = await response.json();
+            throw new Error(JSON.stringify(errorData));
+        } else {
+            // ถ้า API ส่ง error response ในรูปแบบอื่น
+            const errorText = await response.text();
+            throw new Error(errorText || response.statusText);
+        }
+    }
+
+    return response.json() as Promise<T>;
+}
 
 export async function getUsers(params: UserQueryParams): Promise<PaginatedResponse<User>> {
     const queryParams = new URLSearchParams();
@@ -13,22 +30,21 @@ export async function getUsers(params: UserQueryParams): Promise<PaginatedRespon
     if (params.order) queryParams.set("order", params.order);
 
     const response = await fetch(`${API_BASE_URL}/user?${queryParams.toString()}`);
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch users: ${response.statusText}`);
-    }
-
-    return response.json();
+    return handleResponse<PaginatedResponse<User>>(response);
 }
 
-export async function getUser(id: string): Promise<User> {
-    const response = await fetch(`${API_BASE_URL}/user/${id}`);
+export async function getUser(id: string): Promise<User | null> {
+    try {
+        const response = await fetch(`${API_BASE_URL}/user/${id}`);
 
-    if (!response.ok) {
-        throw new Error(`Failed to fetch user with ID ${id}: ${response.statusText}`);
+        if (response.status === 404) {
+            return null;
+        }
+        return handleResponse<User>(response);
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        return null;
     }
-
-    return response.json();
 }
 
 export async function createUser(userData: Partial<User>): Promise<User> {
@@ -40,11 +56,7 @@ export async function createUser(userData: Partial<User>): Promise<User> {
         body: JSON.stringify(userData)
     });
 
-    if (!response.ok) {
-        throw new Error(`Failed to create user: ${response.statusText}`);
-    }
-
-    return response.json();
+    return handleResponse<User>(response);
 }
 
 export async function updateUser(id: string, userData: Partial<User>): Promise<User> {
@@ -56,11 +68,7 @@ export async function updateUser(id: string, userData: Partial<User>): Promise<U
         body: JSON.stringify(userData)
     });
 
-    if (!response.ok) {
-        throw new Error(`Failed to update user with ID ${id}: ${response.statusText}`);
-    }
-
-    return response.json();
+    return handleResponse<User>(response);
 }
 
 export async function deleteUser(id: string): Promise<void> {
@@ -68,7 +76,5 @@ export async function deleteUser(id: string): Promise<void> {
         method: "DELETE"
     });
 
-    if (!response.ok) {
-        throw new Error(`Failed to delete user with ID ${id}: ${response.statusText}`);
-    }
+    return handleResponse<void>(response);
 }

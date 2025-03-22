@@ -4,9 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84fdc0b8-21d0-40e1-9b1c-4cf319dd4c40" name="Changes" comment="[Q5](backend) - add repo implementation">
-      <change afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
+    <list default="true" id="84fdc0b8-21d0-40e1-9b1c-4cf319dd4c40" name="Changes" comment="[Q5](backend) - fix datetime invalid for sqlite">
+      <change afterPath="$PROJECT_DIR$/frontend/src/app/profile/[id]/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/loading.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/pagination.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/user-dialog.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/user-search.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/user-table.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/next.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/api.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +30,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="TypeScript File" />
+        <option value="Dockerfile" />
       </list>
     </option>
   </component>
@@ -45,21 +59,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feat/q5-fullstack",
-    "last_opened_file_path": "/Users/aphisit/Desktop/programming-test-202501/question-5-fullstack/backend/src/flows/users",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
-    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;HTTP Request.get | DELETE - ลบผู้ใช้.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.get | DELETE - ลบผู้ใช้ที่ไม่มีอยู่ (ควรแสดง error).executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.get | GET - ค้นหาผู้ใช้ด้วยชื่อหรืออีเมล.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.get | GET - ดึงข้อมูลผู้ใช้ด้วย ID ที่ไม่มีอยู่ (ควรแสดง error).executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.get | GET - ดึงข้อมูลผู้ใช้ทั้งหมด.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feat/q5-fullstack&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/aphisit/Desktop/programming-test-202501/question-5-fullstack&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/aphisit/Desktop/programming-test-202501/question-5-fullstack/frontend/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -82,10 +102,34 @@
       <recent name="$PROJECT_DIR$/backend/src" />
     </key>
   </component>
+  <component name="RunManager" selected="HTTP Request.get | GET - ดึงข้อมูลผู้ใช้ด้วย ID ที่ไม่มีอยู่ (ควรแสดง error)">
+    <configuration name="get | DELETE - ลบผู้ใช้ที่ไม่มีอยู่ (ควรแสดง error)" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/backend/request/get.rest" index="13" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="get | DELETE - ลบผู้ใช้" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/backend/request/get.rest" index="12" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="get | GET - ดึงข้อมูลผู้ใช้ด้วย ID ที่ไม่มีอยู่ (ควรแสดง error)" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/backend/request/get.rest" executionIdentifier="GET - ดึงข้อมูลผู้ใช้ด้วย ID ที่ไม่มีอยู่ (ควรแสดง error)" index="4" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="get | GET - ค้นหาผู้ใช้ด้วยชื่อหรืออีเมล" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/backend/request/get.rest" executionIdentifier="GET - ค้นหาผู้ใช้ด้วยชื่อหรืออีเมล" index="2" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="get | GET - ดึงข้อมูลผู้ใช้ทั้งหมด" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/backend/request/get.rest" executionIdentifier="GET - ดึงข้อมูลผู้ใช้ทั้งหมด" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="HTTP Request.get | GET - ดึงข้อมูลผู้ใช้ด้วย ID ที่ไม่มีอยู่ (ควรแสดง error)" />
+        <item itemvalue="HTTP Request.get | DELETE - ลบผู้ใช้" />
+        <item itemvalue="HTTP Request.get | DELETE - ลบผู้ใช้ที่ไม่มีอยู่ (ควรแสดง error)" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-WS-242.20224.342" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-WS-243.26053.12" />
       </set>
     </attachedChunks>
   </component>
@@ -101,6 +145,11 @@
       <workItem from="1742397069023" duration="5783000" />
       <workItem from="1742430283138" duration="19000" />
       <workItem from="1742622504166" duration="988000" />
+      <workItem from="1742644945630" duration="3015000" />
+      <workItem from="1742654066594" duration="90000" />
+      <workItem from="1742654169292" duration="932000" />
+      <workItem from="1742655106360" duration="72000" />
+      <workItem from="1742655398247" duration="3678000" />
     </task>
     <task id="LOCAL-00001" summary="[Q5](backend) - init backend project">
       <option name="closed" value="true" />
@@ -142,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742403879294</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="[Q5](backend) - fix datetime invalid for sqlite">
+      <option name="closed" value="true" />
+      <created>1742658385863</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1742658385863</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -155,6 +212,7 @@
     <MESSAGE value="[Q5](backend) - init backend project" />
     <MESSAGE value="[Q5](backend) - reset" />
     <MESSAGE value="[Q5](backend) - add repo implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="[Q5](backend) - add repo implementation" />
+    <MESSAGE value="[Q5](backend) - fix datetime invalid for sqlite" />
+    <option name="LAST_COMMIT_MESSAGE" value="[Q5](backend) - fix datetime invalid for sqlite" />
   </component>
 </project>

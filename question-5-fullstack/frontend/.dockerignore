@@ -1,0 +1,34 @@
+# เวอร์ชันควบคุม
+.git
+.github
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+.next
+out
+
+# ไฟล์ environment
+.env
+.env.*
+!.env.example
+
+# ไฟล์ Docker
+Dockerfile
+.dockerignore
+docker-compose*
+
+# ไฟล์ IDE และ Editor
+.idea
+.vscode
+*.swp
+*.swo
+
+# ไฟล์ระบบปฏิบัติการ
+.DS_Store
+Thumbs.db

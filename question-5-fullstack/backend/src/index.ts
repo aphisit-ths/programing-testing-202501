@@ -6,7 +6,7 @@ import { UserController } from "./modules/users/user.controller";
 import { CustomError, handleErrorResponse } from "./middleware/exceptions";
 import { cors } from "@elysiajs/cors";
 
-const DEFAULT_PORT: number = 2222;
+const DEFAULT_PORT: number = 7777;
 
 const getHealthStatus = async (): Promise<unknown> => {
     try {
