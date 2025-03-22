@@ -18,5 +18,7 @@ export const USER_VALIDATION_ERRORS = {
     USER_NOT_FOUND: 'User not found',
     EMAIL_REQUIRED: 'Email is required for update',
     ALREADY_DELETED: 'Cant delete a user',
-    DELETE_SUCCESS: 'I will missing you'
+    DELETE_SUCCESS: 'I will missing you',
+    MISSING_REQUIRED_FIELDS: "Missing some require fields",
+    NO_UPDATE_DATA: "No fields to update"
 };

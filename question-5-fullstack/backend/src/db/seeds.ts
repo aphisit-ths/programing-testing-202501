@@ -3,19 +3,19 @@ import { faker } from '@faker-js/faker';
 import {HealthCheck, healthChecks, users} from "./schema";
 import {runMigrations} from "./migrate";
 import {db} from "./db";
+import {sql} from "drizzle-orm";
 
-/**
- * Seed the database with random user data
- * @param count Number of users to generate
- */
-async function seedUsers(count: number) {
+async function seedUsers(count: number = 100) {
     console.log(`Starting to seed ${count} users...`);
 
-    // Run migrations first to ensure table exists
     runMigrations();
 
     await db.delete(users)
     await db.delete(healthChecks)
+
+    await db.run(sql`DELETE FROM sqlite_sequence WHERE name='users'`);
+    await db.run(sql`DELETE FROM sqlite_sequence WHERE name='health_checks'`);
+
 
     // Generate random users
     const userData = Array.from({ length: count }, () => ({
@@ -33,7 +33,6 @@ async function seedUsers(count: number) {
 
     await db.insert(healthChecks).values([healthCheckData]);
 
-    // Insert in batches to avoid potential issues with large datasets
     const BATCH_SIZE = 100;
     for (let i = 0; i < userData.length; i += BATCH_SIZE) {
         const batch = userData.slice(i, i + BATCH_SIZE);
@@ -44,9 +43,8 @@ async function seedUsers(count: number) {
     console.log(`Successfully seeded ${count} users`);
 }
 
-// If this file is run directly (not imported)
 if (require.main === module) {
-    const count = process.argv[2] ? parseInt(process.argv[2], 10) : 1000;
+    const count = process.argv[2] ? parseInt(process.argv[2], 10) : 100;
 
     seedUsers(count)
         .then(() => {

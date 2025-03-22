@@ -1,4 +1,79 @@
-### Helthcheck
+### GET - ดึงข้อมูลผู้ใช้ทั้งหมด
+GET http://localhost:7777/api/user
+Accept: application/json
+
+### GET - ค้นหาผู้ใช้ด้วยชื่อหรืออีเมล
+GET http://localhost:7777/api/user?search=test
+Accept: application/json
+
+### GET - ดึงข้อมูลผู้ใช้ด้วย ID
 GET http://localhost:7777/api/user/1
 Accept: application/json
 
+### GET - ดึงข้อมูลผู้ใช้ด้วย ID ที่ไม่มีอยู่ (ควรแสดง error)
+GET http://localhost:7777/api/user/9999
+Accept: application/json
+
+### GET - แบ่งหน้าและจัดเรียงข้อมูล
+GET http://localhost:7777/api/user?start=10&limit=5&sortBy=name&order=desc
+Accept: application/json
+
+### POST - สร้างผู้ใช้ใหม่
+POST http://localhost:7777/api/user
+Content-Type: application/json
+
+{
+  "name": "ทดสอบ",
+  "age": 30,
+  "email": "test@example.com",
+  "avatarUrl": "https://example.com/avatar.jpg"
+}
+
+### POST - สร้างผู้ใช้ใหม่ด้วยข้อมูลไม่ครบ (ควรแสดง error)
+POST http://localhost:7777/api/user
+Content-Type: application/json
+
+{
+  "name": "ทดสอบ",
+  "age": 30
+}
+
+### PUT - อัปเดตข้อมูลผู้ใช้
+PUT http://localhost:7777/api/user/3501
+Content-Type: application/json
+
+{
+  "name": "ทดสอบอัปเดต"
+}
+
+### PUT - อัปเดตข้อมูลผู้ใช้หลายฟิลด์
+PUT http://localhost:7777/api/user/1
+Content-Type: application/json
+
+{
+  "name": "ชื่อใหม่",
+  "age": 35,
+  "email": "newemail@example.com"
+}
+
+### PUT - อัปเดตข้อมูลผู้ใช้ที่ไม่มีอยู่ (ควรแสดง error)
+PUT http://localhost:7777/api/user/9999
+Content-Type: application/json
+
+{
+  "name": "ทดสอบ"
+}
+
+### PUT - อัปเดตไม่มีข้อมูลให้เปลี่ยน (ควรแสดง error)
+PUT http://localhost:7777/api/user/1
+Content-Type: application/json
+
+{}
+
+### DELETE - ลบผู้ใช้
+DELETE http://localhost:7777/api/user/1
+Accept: application/json
+
+### DELETE - ลบผู้ใช้ที่ไม่มีอยู่ (ควรแสดง error)
+DELETE http://localhost:7777/api/user/9999
+Accept: application/json

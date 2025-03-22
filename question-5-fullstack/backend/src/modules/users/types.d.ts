@@ -4,7 +4,7 @@ import {User} from "./user.model";
 interface IUserBusinessFlow {
     create(userData: CreateUserDto): Promise<User>;
 
-    update(userData: UpdateUserDto): Promise<User>;
+    update(userData: UpdateUserDto): Promise<User|null>;
 
     deleteById(id: number): Promise<{ message: string }>;
 
@@ -24,7 +24,7 @@ export interface IFindAllUserPaginateResp {
 export type Order = 'asc' | 'desc';
 
 export interface IQueryParams {
-    query?: string
+    search?: string
     start?: number
     limit?: number
     sortBy?: string
