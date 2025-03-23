@@ -4,15 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="84fdc0b8-21d0-40e1-9b1c-4cf319dd4c40" name="Changes" comment="[Q5](backend) - removed unused package">
+    <list default="true" id="84fdc0b8-21d0-40e1-9b1c-4cf319dd4c40" name="Changes" comment="[Q5](maintain) - change toast component as to color / resolved network path when deploy on docker">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.dockerignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/app/profile/[id]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/app/profile/[id]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/user-dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/user-dialog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/lib/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/api.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,7 +137,7 @@
       <workItem from="1742654169292" duration="932000" />
       <workItem from="1742655106360" duration="72000" />
       <workItem from="1742655398247" duration="3766000" />
-      <workItem from="1742692793952" duration="8147000" />
+      <workItem from="1742692793952" duration="9379000" />
     </task>
     <task id="LOCAL-00001" summary="[Q5](backend) - init backend project">
       <option name="closed" value="true" />
@@ -210,7 +203,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742693388256</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="[Q5](maintain) - change toast component as to color / resolved network path when deploy on docker">
+      <option name="closed" value="true" />
+      <created>1742702673437</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1742702673437</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -226,6 +227,7 @@
     <MESSAGE value="[Q5](backend) - fix datetime invalid for sqlite" />
     <MESSAGE value="[Q5](frontend) - integrate w/ backend" />
     <MESSAGE value="[Q5](backend) - removed unused package" />
-    <option name="LAST_COMMIT_MESSAGE" value="[Q5](backend) - removed unused package" />
+    <MESSAGE value="[Q5](maintain) - change toast component as to color / resolved network path when deploy on docker" />
+    <option name="LAST_COMMIT_MESSAGE" value="[Q5](maintain) - change toast component as to color / resolved network path when deploy on docker" />
   </component>
 </project>
