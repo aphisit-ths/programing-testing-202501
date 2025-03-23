@@ -21,6 +21,7 @@ import {getUser, deleteUser} from "@/lib/api";
 import {User} from "@/types";
 import {ArrowLeft, Calendar, Mail, Pencil, Trash, User as UserIcon} from "lucide-react";
 import {toast} from "sonner";
+import {Toaster} from "@/components/ui/sonner";
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -132,121 +133,124 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="container mx-auto py-8">
-            <Button variant="outline" onClick={() => router.push("/")} className="mb-6">
-                <ArrowLeft className="mr-2 h-4 w-4"/>
-                กลับหน้าหลัก
-            </Button>
+        <>
+            <div className="container mx-auto py-8">
+                <Button variant="outline" onClick={() => router.push("/")} className="mb-6">
+                    <ArrowLeft className="mr-2 h-4 w-4"/>
+                    กลับหน้าหลัก
+                </Button>
 
-            <Card className="w-full max-w-2xl mx-auto">
-                <CardHeader className="relative">
-                    <div className="absolute right-4 top-4 flex gap-2">
-                        <Button variant="outline" size="sm" onClick={handleEdit}>
-                            <Pencil className="mr-2 h-4 w-4"/>
-                            แก้ไข
-                        </Button>
-                        <Button variant="destructive" size="sm" onClick={() => setIsDeleteDialogOpen(true)}>
-                            <Trash className="mr-2 h-4 w-4"/>
-                            ลบ
-                        </Button>
-                    </div>
-                    <div className="flex flex-col sm:flex-row items-center gap-4">
-                        <div className="relative h-24 w-24 rounded-full overflow-hidden bg-gray-100">
-                            {user.avatarUrl ? (
-                                <Image
-                                    src={user.avatarUrl}
-                                    alt={user.name}
-                                    width={96}
-                                    height={96}
-                                    className="object-cover w-full h-full"
-                                />
-                            ) : (
-                                <div
-                                    className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground text-4xl">
-                                    {user.name.charAt(0).toUpperCase()}
-                                </div>
-                            )}
+                <Card className="w-full max-w-2xl mx-auto">
+                    <CardHeader className="relative">
+                        <div className="absolute right-4 top-4 flex gap-2">
+                            <Button variant="outline" size="sm" onClick={handleEdit}>
+                                <Pencil className="mr-2 h-4 w-4"/>
+                                แก้ไข
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => setIsDeleteDialogOpen(true)}>
+                                <Trash className="mr-2 h-4 w-4"/>
+                                ลบ
+                            </Button>
                         </div>
-                        <div className="text-center sm:text-left">
-                            <CardTitle className="text-2xl">{user.name}</CardTitle>
-                            <CardDescription>ID: {user.id}</CardDescription>
-                        </div>
-                    </div>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">ข้อมูลส่วนตัว</h3>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="flex items-center gap-3">
-                                <UserIcon className="h-5 w-5 text-muted-foreground"/>
-                                <div>
-                                    <p className="text-sm text-muted-foreground">อายุ</p>
-                                    <p className="font-medium">{user.age} ปี</p>
-                                </div>
+                        <div className="flex flex-col sm:flex-row items-center gap-4">
+                            <div className="relative h-24 w-24 rounded-full overflow-hidden bg-gray-100">
+                                {user.avatarUrl ? (
+                                    <Image
+                                        src={user.avatarUrl}
+                                        alt={user.name}
+                                        width={96}
+                                        height={96}
+                                        className="object-cover w-full h-full"
+                                    />
+                                ) : (
+                                    <div
+                                        className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground text-4xl">
+                                        {user.name.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
                             </div>
-
-                            <div className="flex items-center gap-3">
-                                <Mail className="h-5 w-5 text-muted-foreground"/>
-                                <div>
-                                    <p className="text-sm text-muted-foreground">อีเมล</p>
-                                    <p className="font-medium">{user.email}</p>
-                                </div>
+                            <div className="text-center sm:text-left">
+                                <CardTitle className="text-2xl">{user.name}</CardTitle>
+                                <CardDescription>ID: {user.id}</CardDescription>
                             </div>
                         </div>
-                    </div>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">ข้อมูลส่วนตัว</h3>
 
-                    <div className="space-y-4">
-                        <h3 className="text-lg font-semibold border-b pb-2">ข้อมูลระบบ</h3>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="flex items-center gap-3">
-                                <Calendar className="h-5 w-5 text-muted-foreground"/>
-                                <div>
-                                    <p className="text-sm text-muted-foreground">สร้างเมื่อ</p>
-                                    <p className="font-medium">{formatDate(user.createdAt.toString())}</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3">
+                                    <UserIcon className="h-5 w-5 text-muted-foreground"/>
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">อายุ</p>
+                                        <p className="font-medium">{user.age} ปี</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="flex items-center gap-3">
-                                <Calendar className="h-5 w-5 text-muted-foreground"/>
-                                <div>
-                                    <p className="text-sm text-muted-foreground">อัปเดตล่าสุด</p>
-                                    <p className="font-medium">{formatDate(user.updatedAt.toString())}</p>
+                                <div className="flex items-center gap-3">
+                                    <Mail className="h-5 w-5 text-muted-foreground"/>
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">อีเมล</p>
+                                        <p className="font-medium">{user.email}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
 
-            {/* Edit Dialog */}
-            {isEditDialogOpen && (
-                <UserDialog
-                    user={user}
-                    isOpen={true}
-                    onClose={() => setIsEditDialogOpen(false)}
-                    onSuccess={fetchUserData}
-                />
-            )}
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold border-b pb-2">ข้อมูลระบบ</h3>
 
-            {/* Delete Confirmation Dialog */}
-            <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>ยืนยันการลบผู้ใช้</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ &quot;{user.name}&quot;? การกระทำนี้ไม่สามารถเปลี่ยนได้
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
-                            {isDeleting ? "กำลังลบ..." : "ยืนยัน"}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-        </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3">
+                                    <Calendar className="h-5 w-5 text-muted-foreground"/>
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">สร้างเมื่อ</p>
+                                        <p className="font-medium">{formatDate(user.createdAt.toString())}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                    <Calendar className="h-5 w-5 text-muted-foreground"/>
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">อัปเดตล่าสุด</p>
+                                        <p className="font-medium">{formatDate(user.updatedAt.toString())}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Edit Dialog */}
+                {isEditDialogOpen && (
+                    <UserDialog
+                        user={user}
+                        isOpen={true}
+                        onClose={() => setIsEditDialogOpen(false)}
+                        onSuccess={fetchUserData}
+                    />
+                )}
+
+                {/* Delete Confirmation Dialog */}
+                <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>ยืนยันการลบผู้ใช้</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                คุณแน่ใจหรือไม่ว่าต้องการลบผู้ใช้ &quot;{user.name}&quot;? การกระทำนี้ไม่สามารถเปลี่ยนได้
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>ยกเลิก</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDelete} disabled={isDeleting}>
+                                {isDeleting ? "กำลังลบ..." : "ยืนยัน"}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            </div>
+            <Toaster richColors/>
+        </>
     );
 }

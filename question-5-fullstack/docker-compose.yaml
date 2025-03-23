@@ -8,9 +8,14 @@ services:
       - "7777:7777"
     volumes:
       - ./data:/app/data
-    networks:
-      - app-network
+  frontend:
+    build:  ./frontend
+    container_name: frontend
+    env_file:
+      - ./frontend/.env.docker
+    ports:
+      - "3000:3000"
 
 networks:
-  app-network:
+  default:
     driver: bridge

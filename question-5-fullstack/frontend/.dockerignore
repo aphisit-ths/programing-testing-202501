@@ -14,9 +14,6 @@ yarn-error.log*
 out
 
 # ไฟล์ environment
-.env
-.env.*
-!.env.example
 
 # ไฟล์ Docker
 Dockerfile

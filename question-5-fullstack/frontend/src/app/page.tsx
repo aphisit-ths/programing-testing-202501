@@ -161,7 +161,7 @@ export default function Page() {
     return (
         <Suspense fallback={<Loading size={32} text="กำลังโหลด..." className="h-[60vh]"/>}>
             <UserContent/>
-            <Toaster/>
+            <Toaster richColors/>
         </Suspense>
     );
 }

@@ -157,7 +157,6 @@ export function UserDialog({user, isOpen, onClose, onSuccess}: UserDialogProps) 
                     // ลองตรวจสอบว่าข้อความ error อยู่ในรูปแบบ JSON หรือไม่
                     const errorData = JSON.parse(error.message);
                     if (errorData.errors) {
-                        // กรณีที่ backend ส่ง validation errors มาให้แสดงในฟอร์ม
                         const backendErrors: Record<string, string> = {};
 
                         Object.entries(errorData.errors).forEach(([key, message]) => {
@@ -171,10 +170,10 @@ export function UserDialog({user, isOpen, onClose, onSuccess}: UserDialogProps) 
 
                         return; // ไม่ปิด dialog เพื่อให้ผู้ใช้แก้ไขข้อมูล
                     } else if (errorData.message) {
-                        // กรณีที่ backend ส่ง error message ทั่วไปมา
                         toast.error("เกิดข้อผิดพลาด", {
                             description: errorData.message,
                         });
+                        return;
                     }
                 } catch (e) {
                     // ไม่สามารถแปลง error message เป็น JSON ได้ ให้แสดงข้อความเดิม
