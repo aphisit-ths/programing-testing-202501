@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "7777:7777"
+    volumes:
+      - ./data:/app/data
+  frontend:
+    build:  ./frontend
+    container_name: frontend
+    env_file:
+      - ./frontend/.env.docker
+    ports:
+      - "3000:3000"
+
+networks:
+  default:
+    driver: bridge
