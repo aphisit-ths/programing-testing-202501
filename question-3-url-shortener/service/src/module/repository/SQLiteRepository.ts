@@ -56,6 +56,20 @@ export class SQLiteRepository implements IBaseStorageRepository {
             .set(toUpdateLookupData)
             .where(eq(lookupUrls.id, data.id))
             .returning();
-        console.log('Lookup Created Complete: ', updatedLookupData);
+        console.log('Lookup Update Complete: ', updatedLookupData.originalUrl);
+    }
+
+    async atomicUpdate(id: string, updates: Partial<LookUpUrl>): Promise<LookUpUrl | null> {
+        try {
+            const [updatedData] = await this.db
+                .update(lookupUrls)
+                .set(updates)
+                .where(eq(lookupUrls.id, id))
+                .returning();
+            return updatedData;
+        } catch (error) {
+            console.error(`Error in atomicUpdate: ${error.message}`);
+            return null;
+        }
     }
 }

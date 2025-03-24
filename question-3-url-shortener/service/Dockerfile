@@ -5,8 +5,8 @@ WORKDIR /app
 COPY . .
 
 RUN bun install
-
-RUN touch user.sqlite
+RUN rm -f ./lookup_urls.sqlite
+RUN touch lookup_urls.sqlite
 RUN bun run db:migrate
 
 EXPOSE 80

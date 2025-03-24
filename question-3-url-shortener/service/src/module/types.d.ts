@@ -3,24 +3,25 @@ export interface LookUpUrl {
     id: string;
     originalUrl: string;
     createdAt: string;
-    expiresAt?: string;
+    expiresAt: string | null;
     visits: number;
-    lastVisit?: string;
     isActive: boolean;
+    lastVisit?: string | null;
 }
 
 export interface IBaseStorageRepository {
     save(data: LookUpUrl): Promise<void>;
     find(id: string): Promise<LookUpUrl | null>;
-    findByOriginalUrl(url: string): Promise<LookUpUrl | null>; // เพิ่ม method นี้
+    findByOriginalUrl(originalUrl: string): Promise<LookUpUrl | null>;
     update(data: LookUpUrl): Promise<void>;
+    atomicUpdate(id: string, updates: Partial<LookUpUrl>): Promise<LookUpUrl | null>;
     list(limit?: number, offset?: number): Promise<LookUpUrl[]>;
 }
 
 export interface ICacheRepository {
     get(id: string): Promise<LookUpUrl | null>;
-    set(id: string, data: LookUpUrl, ttl?: number): Promise<void>;
-    getByOriginalUrl(url: string): Promise<string | null>;
-    setOriginalUrl(url: string, id: string, ttl?: number): Promise<void>;
-    deleteOriginalUrl(url: string): Promise<void>;
+    set(id: string, data: LookUpUrl): Promise<void>;
+    getByOriginalUrl(originalUrl: string): Promise<string | null>;
+    setOriginalUrl(originalUrl: string, id: string): Promise<void>;
+    deleteOriginalUrl(originalUrl: string): Promise<void>;
 }

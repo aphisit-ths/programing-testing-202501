@@ -2,39 +2,38 @@ import {Elysia, t} from 'elysia';
 import {html} from '@elysiajs/html';
 import {ShortenerBusinessFlow} from "./module/shorten.flow";
 import {LRUCacheRepository} from "./module/repository/cache.repo";
-import {InMemoryRepository} from "./module/repository/in-memory-db.repo";
-
-import {homePage} from "./html-stuff/homepage";
-import {errorPage, notFoundPage} from "./html-stuff/error-page";
 import {SQLiteRepository} from "./module/repository/SQLiteRepository";
 import {db} from "./db/db";
+import {homePage} from "./html-stuff/homepage";
+import {errorPage, notFoundPage} from "./html-stuff/error-page";
+
+const CONFIG = {
+    baseUrl: process.env.BASE_URL || 'http://localhost:80',
+    port: parseInt(process.env.PORT || '80')
+};
 
 const cache = new LRUCacheRepository();
-// in case that want to change db
-const storage = new InMemoryRepository()
 const SQLiteStorage = new SQLiteRepository(db);
-const shortener = new ShortenerBusinessFlow(SQLiteStorage, cache);
+const shortenerBusinessFlow = new ShortenerBusinessFlow(SQLiteStorage, cache);
 
 const app = new Elysia()
     .use(html())
     .get('/', () => homePage())
-    .post('/shorten', async ({body}) => {
-        const {url} = body as { url: string };
+    .post('/shorten', async ({body,set}) => {
+        // @ts-ignore
+        const {url, options} = body;
         try {
-            if (!url) {
-                return {error: 'URL is required'};
-            }
-            // URL validation is handled in ShortenerBusinessFlow
-            const result = await shortener.createLookUpData(url);
-            const shortUrl = `http://localhost:80/${result.id}`;
+            const result = await shortenerBusinessFlow.createLookUpData(url, options);
+            const shortUrl = `${CONFIG.baseUrl}/${result.id}`;
 
             return {
                 originalUrl: url,
                 shortUrl,
-                shortCode: result.id
+                shortCode: result.id,
+                expiresAt: result.expiresAt
             };
         } catch (error) {
-            console.error('Error shortening URL:', error);
+            set.status = 400
             return {
                 error: error.message || 'Failed to shorten URL'
             };
@@ -52,9 +51,8 @@ const app = new Elysia()
 
     .get('/:id', async ({params}) => {
         const {id} = params;
-
         try {
-            const result = await shortener.getRealUrl(id);
+            const result = await shortenerBusinessFlow.getRealUrl(id);
 
             if (!result) {
                 return new Response(notFoundPage, {
@@ -65,16 +63,14 @@ const app = new Elysia()
                 });
             }
 
-            // ใช้ Response API แทนที่จะใช้ set.redirect
             return new Response(null, {
-                status: 301,
+                status: 302,
                 headers: {
                     'Location': result.originalUrl
                 }
             });
         } catch (error) {
-            console.error('Error redirecting URL:', error);
-            return new Response(errorPage(error.message || 'Server error occured'), {
+            return new Response(errorPage(error.message || 'Server error occurred'), {
                 status: 500,
                 headers: {
                     'Content-Type': 'text/html'
@@ -82,8 +78,107 @@ const app = new Elysia()
             });
         }
     })
-
-    // Catch-all route for handling 404s
+    .delete('/:id', async ({params,set}) => {
+        const {id} = params;
+        try {
+            const success = await shortenerBusinessFlow.deactivateUrl(id);
+            if (!success) {
+                set.status = 404;
+                return {
+                    status: 404,
+                    message: `URL with ID ${id} not found`
+                };
+            }
+            return {
+                status: 200,
+                message: `URL with ID ${id} deactivated successfully`
+            };
+        } catch (error) {
+            set.status = 500;
+            return {
+                status: 500,
+                error: error.message || 'Failed to deactivate URL'
+            };
+        }
+    })
+    .post('/:id/reactivate', async ({params, set}) => {
+        const {id} = params;
+        try {
+            const success = await shortenerBusinessFlow.reactivateUrl(id);
+            if (!success) {
+                set.status = 404;
+                return {
+                    status: 404,
+                    message: `URL with ID ${id} not found or could not be reactivated`
+                };
+            }
+            return {
+                status: 200,
+                message: `URL with ID ${id} reactivated successfully`
+            };
+        } catch (error) {
+            set.status = 500;
+            return {
+                status: 500,
+                error: error.message || 'Failed to reactivate URL'
+            };
+        }
+    })
+    .patch('/:id/extend', async ({params, body, set}) => {
+        const {id} = params;
+        // @ts-ignore
+        const {days} = body;
+        try {
+            const success = await shortenerBusinessFlow.extendExpiration(id, days);
+            if (!success) {
+                set.status = 404;
+                return {
+                    status: 404,
+                    message: `URL with ID ${id} not found`
+                };
+            }
+            return {
+                status: 200,
+                message: `Expiration for URL with ID ${id} extended successfully`
+            };
+        } catch (error) {
+            set.status = 500;
+            return {
+                status: 500,
+                error: error.message || 'Failed to extend URL expiration'
+            };
+        }
+    }, {
+        body: t.Object({
+            days: t.Number({
+                default: 30,
+                minimum: 1,
+                maximum: 365
+            })
+        })
+    })
+    .get('/urls', async ({query, set}) => {
+        const limit = Number(query?.limit || 100);
+        const offset = Number(query?.offset || 0);
+        try {
+            const urls = await shortenerBusinessFlow.listUrls(limit, offset);
+            return {
+                status: 200,
+                data: urls,
+                pagination: {
+                    limit,
+                    offset,
+                    count: urls.length
+                }
+            };
+        } catch (error) {
+            set.status = 500;
+            return {
+                status: 500,
+                error: error.message || 'Failed to list URLs'
+            };
+        }
+    })
     .all('*', () => {
         return new Response(notFoundPage, {
             status: 404,
@@ -92,11 +187,7 @@ const app = new Elysia()
             }
         });
     })
-
-    // Global error handler
     .onError(({code, error}) => {
-        console.error(`Error [${code}]:`, error);
-
         if (code === 'NOT_FOUND') {
             return new Response(notFoundPage, {
                 status: 404,
@@ -105,7 +196,6 @@ const app = new Elysia()
                 }
             });
         }
-
         // @ts-ignore
         return new Response(errorPage(error.message || 'An unexpected error occurred'), {
             status: 500,
@@ -114,7 +204,7 @@ const app = new Elysia()
             }
         });
     })
+    .listen(CONFIG.port);
 
-    .listen(80);
 
 console.log(`URL Shortener running at http://localhost:${app.server?.port}`);

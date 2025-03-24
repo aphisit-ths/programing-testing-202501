@@ -9,10 +9,9 @@ export interface ShortenerOptions {
 
 export interface IShortenerBusinessFlow {
     createLookUpData(longUrl: string, options?: ShortenerOptions): Promise<LookUpUrl>;
-
     getRealUrl(shortUrl: string): Promise<LookUpUrl | null>;
-
     findByOriginalUrl(originalUrl: string): Promise<LookUpUrl | null>;
+    reactivateUrl(id: string): Promise<boolean>;
 }
 
 export class ShortenerBusinessFlow implements IShortenerBusinessFlow {
@@ -20,6 +19,8 @@ export class ShortenerBusinessFlow implements IShortenerBusinessFlow {
     private readonly cache: ICacheRepository | null;
     private readonly DEFAULT_EXPIRY_DAYS = 30;
     private readonly MAX_COLLISION_RETRIES = 5;
+    private readonly MAX_URL_LENGTH = 2048;
+    private readonly CUSTOM_ID_PATTERN = /^[a-zA-Z0-9_-]{3,16}$/;
 
     constructor(storage: IBaseStorageRepository, cache: ICacheRepository | null = null) {
         this.storage = storage;
@@ -27,20 +28,150 @@ export class ShortenerBusinessFlow implements IShortenerBusinessFlow {
     }
 
     async createLookUpData(longUrl: string, options?: ShortenerOptions): Promise<LookUpUrl> {
-
         this.validateUrl(longUrl);
 
-        // Lookup by Original URL - เช็คก่อนว่าเคยมีการย่อ URL นี้แล้วหรือไม่
+        if (longUrl.length > this.MAX_URL_LENGTH) {
+            throw new Error(`URL exceeds maximum length of ${this.MAX_URL_LENGTH} characters`);
+        }
+
+        if (options?.customId && !this.CUSTOM_ID_PATTERN.test(options.customId)) {
+            throw new Error('Custom ID must be 3-16 characters and contain only letters, numbers, underscores, and hyphens');
+        }
+
+        // Check if URL already exists
         const existingUrl = await this.findByOriginalUrl(longUrl);
+
+        // If active and not expired, return it
         if (existingUrl && existingUrl.isActive && !this.isExpired(existingUrl)) {
             return existingUrl;
         }
 
-        // ใช้ customId ถ้ามี หรือสร้าง nanoid
+        // If URL exists but inactive or expired
+        if (existingUrl) {
+            // If customId provided and different from existing, create new
+            if (options?.customId && options.customId !== existingUrl.id) {
+                return this.createNewLookup(longUrl, options);
+            }
+
+            // If expired, extend expiration
+            if (this.isExpired(existingUrl)) {
+                const extended = await this.extendExpiration(existingUrl.id);
+                if (extended) {
+                    const refreshed = await this.storage.find(existingUrl.id);
+                    if (refreshed && refreshed.isActive) return refreshed;
+                }
+            }
+
+            // If inactive, reactivate
+            if (!existingUrl.isActive) {
+                const reactivated = await this.reactivateUrl(existingUrl.id);
+                if (reactivated) {
+                    const refreshed = await this.storage.find(existingUrl.id);
+                    if (refreshed) return refreshed;
+                }
+            }
+        }
+
+        // Create new URL
+        return this.createNewLookup(longUrl, options);
+    }
+
+    async getRealUrl(shortUrl: string): Promise<LookUpUrl | null> {
+        const id = this.extractIdFromShortUrl(shortUrl);
+        if (!id) return null;
+
+        // Check cache first
+        if (this.cache) {
+            const cachedData = await this.cache.get(id);
+            if (cachedData && cachedData.isActive && !this.isExpired(cachedData)) {
+                this.updateVisitCount(cachedData).catch(() => {});
+                return cachedData;
+            }
+        }
+
+        const lookupData = await this.storage.find(id);
+        if (!lookupData || !lookupData.isActive || this.isExpired(lookupData)) {
+            return null;
+        }
+
+        // Update visit count
+        await this.atomicVisitUpdate(lookupData);
+        return lookupData;
+    }
+
+    async findByOriginalUrl(originalUrl: string): Promise<LookUpUrl | null> {
+        if (this.cache) {
+            const cachedId = await this.cache.getByOriginalUrl(originalUrl);
+            if (cachedId) {
+                const lookupData = await this.cache.get(cachedId);
+                if (lookupData && lookupData.isActive && !this.isExpired(lookupData)) {
+                    return lookupData;
+                }
+            }
+        }
+
+        return this.storage.findByOriginalUrl(originalUrl);
+    }
+
+    async reactivateUrl(id: string): Promise<boolean> {
+        const lookupData = await this.storage.find(id);
+        if (!lookupData) return false;
+
+        if (this.isExpired(lookupData)) {
+            await this.extendExpiration(id);
+        }
+
+        lookupData.isActive = true;
+        await this.storage.update(lookupData);
+
+        if (this.cache) {
+            await this.cache.set(id, lookupData);
+            await this.cache.setOriginalUrl(lookupData.originalUrl, id);
+        }
+
+        return true;
+    }
+
+    async deactivateUrl(id: string): Promise<boolean> {
+        const lookupData = await this.storage.find(id);
+        if (!lookupData) return false;
+
+        lookupData.isActive = false;
+        await this.storage.update(lookupData);
+
+        if (this.cache) {
+            await this.cache.set(id, lookupData);
+            await this.cache.deleteOriginalUrl(lookupData.originalUrl);
+        }
+
+        return true;
+    }
+
+    async listUrls(limit: number = 100, offset: number = 0): Promise<LookUpUrl[]> {
+        return this.storage.list(limit, offset);
+    }
+
+    async extendExpiration(id: string, additionalDays: number = 30): Promise<boolean> {
+        const lookupData = await this.storage.find(id);
+        if (!lookupData) return false;
+
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + additionalDays);
+        lookupData.expiresAt = expiresAt.toISOString();
+
+        await this.storage.update(lookupData);
+
+        if (this.cache) {
+            await this.cache.set(id, lookupData);
+        }
+
+        return true;
+    }
+
+    private async createNewLookup(longUrl: string, options?: ShortenerOptions): Promise<LookUpUrl> {
         let id = options?.customId || '';
         let retryCount = 0;
 
-        // Collision Handling
         if (!id) {
             do {
                 id = nanoid(6);
@@ -53,14 +184,12 @@ export class ShortenerBusinessFlow implements IShortenerBusinessFlow {
                 throw new Error('Failed to generate unique ID after multiple attempts');
             }
         } else {
-            // ตรวจสอบ collision สำหรับ customId
             const existingId = await this.storage.find(id);
             if (existingId) {
                 throw new Error(`Custom ID '${id}' already exists`);
             }
         }
 
-        // 3. Custom Expiry
         const now = new Date();
         const expiresAt = new Date();
         const expiryDays = options?.expiryDays ?? this.DEFAULT_EXPIRY_DAYS;
@@ -69,96 +198,21 @@ export class ShortenerBusinessFlow implements IShortenerBusinessFlow {
         const lookupData: LookUpUrl = {
             id,
             originalUrl: longUrl,
-            createdAt: now.toString(),
-            expiresAt: expiresAt.toString() ?? null,
+            createdAt: now.toISOString(),
+            expiresAt: expiresAt.toISOString(),
             visits: 0,
-            isActive: true
+            isActive: true,
+            lastVisit: null
         };
 
         await this.storage.save(lookupData);
 
-        // 4. Cache Layer - เพิ่มข้อมูลลง cache
         if (this.cache) {
             await this.cache.set(id, lookupData);
             await this.cache.setOriginalUrl(longUrl, id);
         }
 
         return lookupData;
-    }
-
-    async getRealUrl(shortUrl: string): Promise<LookUpUrl | null> {
-        const id = this.extractIdFromShortUrl(shortUrl);
-        if (!id) return null;
-
-        // 4. Cache Layer - เช็ค cache ก่อน
-        if (this.cache) {
-            const cachedData = await this.cache.get(id);
-            if (cachedData && cachedData.isActive && !this.isExpired(cachedData)) {
-                // อัปเดต visits ใน background โดยไม่รอ
-                await this.updateVisitCount(cachedData).catch(console.error);
-                return cachedData;
-            }
-        }
-
-        const lookupData = await this.storage.find(id);
-
-
-        if (!lookupData || !lookupData.isActive || this.isExpired(lookupData)) {
-            return null;
-        }
-
-        lookupData.visits += 1;
-        lookupData.lastVisit = new Date().toString();
-
-        // อัปเดตข้อมูลใน storage
-        await this.storage.update(lookupData);
-
-        // อัปเดต cache
-        if (this.cache) {
-            await this.cache.set(id, lookupData);
-        }
-
-        return lookupData;
-    }
-
-    async findByOriginalUrl(originalUrl: string): Promise<LookUpUrl | null> {
-        // เช็ค cache ก่อน
-        if (this.cache) {
-            const cachedId = await this.cache.getByOriginalUrl(originalUrl);
-            if (cachedId) {
-                const lookupData = await this.cache.get(cachedId);
-                if (lookupData && lookupData.isActive && !this.isExpired(lookupData)) {
-                    return lookupData;
-                }
-            }
-        }
-
-        // ถ้าไม่มีใน cache ค้นหาจาก storage
-        return this.storage.findByOriginalUrl(originalUrl);
-    }
-
-    async listUrls(limit: number = 100, offset: number = 0): Promise<LookUpUrl[]> {
-        return this.storage.list(limit, offset);
-    }
-
-    async deactivateUrl(id: string): Promise<boolean> {
-        const lookupData = await this.storage.find(id);
-
-        if (!lookupData) {
-            return false;
-        }
-
-        lookupData.isActive = false;
-        await this.storage.update(lookupData);
-
-        // อัปเดต cache
-        if (this.cache) {
-            await this.cache.set(id, lookupData);
-            // ลบความสัมพันธ์กับ originalUrl จาก cache
-            await this.cache.deleteOriginalUrl(lookupData.originalUrl);
-        }
-
-        return true;
     }
 
     private validateUrl(url: string): void {
@@ -175,7 +229,7 @@ export class ShortenerBusinessFlow implements IShortenerBusinessFlow {
     private extractIdFromShortUrl(shortUrl: string): string | null {
         try {
             const url = new URL(shortUrl);
-            return url.pathname.slice(1); // ตัด '/' ออก
+            return url.pathname.slice(1);
         } catch (e) {
             return shortUrl;
         }
@@ -186,15 +240,33 @@ export class ShortenerBusinessFlow implements IShortenerBusinessFlow {
         return new Date() > new Date(lookupData.expiresAt);
     }
 
-    // แยกการอัปเดต visits เพื่อให้สามารถทำงานแบบ async ได้
     private async updateVisitCount(lookupData: LookUpUrl): Promise<void> {
         lookupData.visits += 1;
-        lookupData.lastVisit = new Date().toString();
-        console.log(`Lookup update count: ${lookupData.visits}`);
+        lookupData.lastVisit = new Date().toISOString();
         await this.storage.update(lookupData);
 
         if (this.cache) {
             await this.cache.set(lookupData.id, lookupData);
+        }
+    }
+
+    private async atomicVisitUpdate(lookupData: LookUpUrl): Promise<LookUpUrl> {
+        try {
+            const updatedData = await this.storage.atomicUpdate(lookupData.id, {
+                visits: lookupData.visits + 1,
+                lastVisit: new Date().toISOString()
+            });
+
+            if (this.cache && updatedData) {
+                await this.cache.set(lookupData.id, updatedData);
+            }
+
+            return updatedData || lookupData;
+        } catch {
+            lookupData.visits += 1;
+            lookupData.lastVisit = new Date().toISOString();
+            await this.storage.update(lookupData);
+            return lookupData;
         }
     }
 }
