@@ -22,7 +22,7 @@ docker-compose up -d
 # Frontend: http://localhost:3000
 ```
 ## สาธิตการทำงานของระบบ
-![asdw](https://www.youtube.com/watch?v=tM-0eIT026E)
+[คลิกที่นี่เพื่อดูวิดีโอสาธิตการทำงาน](https://www.youtube.com/watch?v=tM-0eIT026E)
 
 ## การรันแต่ละส่วนแยกกัน
 

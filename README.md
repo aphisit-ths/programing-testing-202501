@@ -35,5 +35,4 @@ docker-compose up -d
 ## รายละเอียดแต่ละโปรเจค
 
 - [URL Shortener README](./question-3-url-shortener/README.md)
-- [User Management Backend README](./question-5-fullstack/backend/README.md)
-- [User Management Frontend README](./question-5-fullstack/frontend/README.md)
+- [User Management README](./question-5-fullstack/README.md)
