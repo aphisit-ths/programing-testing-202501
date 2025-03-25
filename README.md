@@ -5,6 +5,10 @@
 ## โครงสร้างโปรเจค
 
 ```
+├── question-1-turtle-walking/
+    ├── core (instance ทั้งหมดที่เกี่ยวข้องกับ Matrix)
+    ├── files (file สำหรับกำหนด Metrix หรือ Params)
+    ├── index.ts (main process)
 ├── question-3-url-shortener/
     ├── docs (เอกสารที่เกี่ยวข้อง)
     ├── service (API service)
@@ -14,6 +18,14 @@
 ```
 
 ## การเริ่มต้นใช้งาน
+```bash
+# Turtle walking
+cd question-1-turtle-walking
+# Excute 1.1
+make one
+# Excute 1.2
+make two
+```
 ```bash
 # URL Shortener
 cd question-3-url-shortener/service
@@ -38,6 +50,6 @@ docker-compose up -d
 ![user-management-service.png](screenshots/preview/user-management-service.png)
 
 ## รายละเอียดแต่ละโปรเจค
-
+- [Turtle Walking README](./question-1-turtle-walking/README.md)
 - [URL Shortener README](./question-3-url-shortener/README.md)
 - [User Management README](./question-5-fullstack/README.md)
