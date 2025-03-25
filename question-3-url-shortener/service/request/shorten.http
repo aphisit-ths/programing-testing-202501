@@ -1,0 +1,55 @@
+### Test URL Shortener API
+
+### Create a shortened URL (basic)
+POST http://localhost:80/shorten
+Content-Type: application/json
+
+{
+  "url": "https://elysiajs.com/tutorial.html"
+}
+
+### Create a shortened URL with options
+POST http://localhost:80/shorten
+Content-Type: application/json
+
+{
+  "url": "https://nextjs.org/docs",
+  "options": {
+    "expiryDays": 60,
+    "customId": "next-docs",
+    "validateUrl": true
+  }
+}
+
+### Reactive URL
+POST http://localhost:80/next-docs/reactivate
+Content-Type: application/json
+
+### Create a shortened URL with invalid URL
+POST http://localhost:80/shorten
+Content-Type: application/json
+
+{
+  "url": "not-a-valid-url"
+}
+
+### Redirect to original URL
+GET http://localhost:80/next-docs
+
+### Delete a short URL
+DELETE http://localhost:80/next-docs
+
+### Test non-existent short URL
+GET http://localhost:80/non-existent-code
+
+### Test custom ID
+GET http://localhost:80/next-docs
+
+### Test another custom ID
+GET http://localhost:80/angular-intro
+
+### Test homepage
+GET http://localhost:80/
+
+### Test 404 on random path
+GET http://localhost:80/random/path/that/does/not/exist
