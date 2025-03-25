@@ -8,7 +8,6 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./lookup_urls.sqlite:/app/lookup_urls.sqlite
       - ./data:/app/data
     environment:
       - NODE_ENV=production
