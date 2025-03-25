@@ -1,15 +1,34 @@
-# question-1-turtle-walking
+# Question-1-turtle-walking
 
-To install dependencies:
+I just finished for 2 of 3 
 
-```bash
-bun install
+### Project structure
+
+```
+├── question-1-turtle-walking/
+    ├── core (instance ทั้งหมดที่เกี่ยวข้องกับ Matrix)
+    ├── files (file สำหรับกำหนด Metrix หรือ Params)
+    ├── index.ts (main process)
 ```
 
-To run:
-
+## How to execute program
+Zigzag problem (1.1)
 ```bash
-bun run index.ts
+bun run index.ts files/first.txt 1
+#or
+make one
 ```
 
-This project was created using `bun init` in bun v1.2.5. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+Spiral problem (1.2)
+
+```bash
+bun run index.ts files/two.txt 2
+#or
+make two
+```
+
+## Screenshot
+Zigzag problem (1.1)
+![img.png](../screenshots/turtle/img.png)
+Spiral problem (1.2)
+![img_1.png](../screenshots/turtle/img_1.png)

@@ -16,6 +16,7 @@ export class Matrix {
         const isColValid = 0 <= col && col < this.cols;
         return isRowValid && isColValid;
     }
+
     public getValue(row: number, col: number): number | null {
         if (this.isValidPosition(row, col)) {
             return this.data[row][col];
@@ -23,9 +24,6 @@ export class Matrix {
         return null;
     }
 
-    public getCenterPosition(): [number, number] {
-        return [Math.floor(this.rows / 2), Math.floor(this.cols / 2)];
-    }
 }
 
 export abstract class MatrixWalker {
@@ -49,7 +47,6 @@ export abstract class MatrixWalker {
             this.path.push(value);
         }
     }
-
 
     protected canMoveTo(row: number, col: number): boolean {
         return this.matrix.isValidPosition(row, col) && !this.visited[row][col];

@@ -21,9 +21,10 @@ function main(): void {
 
     const solver = new MatrixTurtleSolver(matrixData);
     let result: string;
-
+    console.log('=======================================================')
     switch (problemNum) {
         case "1":
+            console.log('Starting process problem 1.1 (Zigzag)')
             result = solver.processZigzagWalk();
             break;
         case "2":
@@ -31,13 +32,16 @@ function main(): void {
                 console.error("Error: Starting position not provided for problem 1.2");
                 process.exit(1);
             }
+            console.log('Starting process problem 1.2 (Spiral)')
+            console.log(`start point at (${params})`);
             result = solver.processSpiralWalk(params);
             break;
         default:
             console.error(`Error: Unknown problem number '${problemNum}'`);
             process.exit(1);
     }
-
+    console.log('=======================================================')
+    console.log('Result:')
     console.log(result);
 }
 
