@@ -1,6 +1,8 @@
 # Full-stack User Management Application
 
 ระบบจัดการข้อมูลผู้ใช้แบบครบวงจร ประกอบด้วย RESTful API Backend และ Next.js Frontend พัฒนาด้วย Bun, Elysia.js, SQLite และ Next.js
+## สาธิตการทำงานของระบบ
+[คลิกที่นี่เพื่อดูวิดีโอสาธิตการทำงาน](https://www.youtube.com/watch?v=tM-0eIT026E)
 
 ## โครงสร้างโปรเจค
 
@@ -9,8 +11,6 @@
 └── frontend/             # Next.js Frontend Application
 ```
 
-## สาธิตการทำงานของระบบ
-[คลิกที่นี่เพื่อดูวิดีโอสาธิตการทำงาน](https://www.youtube.com/watch?v=tM-0eIT026E)
 
 ใช้ Docker Compose เพื่อรันทั้ง backend และ frontend พร้อมกัน:
 
@@ -21,8 +21,6 @@ docker-compose up -d
 # Backend API: http://localhost:7777
 # Frontend: http://localhost:3000
 ```
-## สาธิตการทำงานของระบบ
-[คลิกที่นี่เพื่อดูวิดีโอสาธิตการทำงาน](https://www.youtube.com/watch?v=tM-0eIT026E)
 
 ## การรันแต่ละส่วนแยกกัน
 
